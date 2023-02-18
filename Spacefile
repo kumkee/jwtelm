@@ -2,6 +2,8 @@
 v: 0
 micros:
   - name: backend
-    src: backend
+    src: ./backend
     engine: python3.9
     primary: true
+    public_routes:
+      - "/*"
