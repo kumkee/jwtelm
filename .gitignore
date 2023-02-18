@@ -130,4 +130,4 @@ dmypy.json
 
 .space
 
-./backend/secrect_strs.py
+secrect_strs.py
