@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from secrect_keys import JWT_KEY, NONCE_PEPPER
+from secrect_strs import JWT_KEY, NONCE_PEPPER
 
 # to get a string like this run:
 # openssl rand -hex 32
