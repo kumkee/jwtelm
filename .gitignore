@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .space
+
+./backend/secrect_strs.py

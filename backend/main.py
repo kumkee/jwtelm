@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from secrect_keys import JWT_KEY
+from secrect_keys import JWT_KEY, NONCE_PEPPER
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -21,9 +21,16 @@ fake_users_db = {
         'username': 'johndoe',
         'full_name': 'John Doe',
         'email': 'johndoe@example.com',
-        'hashed_password': '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
+        'hashed_password': '$2b$12$FQaU2NuK243lzzwhZy8ml.tmI6jG/eWD0CEX4jO3BE0piS9vqcREu',
         'disabled': False,
-    }
+    },
+    'kumkee': {
+        'username': 'kumkee',
+        'full_name': 'Kumkee Leung',
+        'email': 'jun@kumkee.net',
+        'hashed_password': '$2b$12$EZhC81O8CnZtId1FxlC97.9.LgraqRqqjCCSF2/pcB25edq02rJKK',
+        'disabled': False,
+    },
 }
 
 
@@ -55,11 +62,11 @@ app = FastAPI()
 
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    return pwd_context.verify(NONCE_PEPPER + plain_password, hashed_password)
 
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    return pwd_context.hash(NONCE_PEPPER + password)
 
 
 def get_user(db, username: str):
