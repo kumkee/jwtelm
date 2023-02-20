@@ -35,6 +35,8 @@ fake_users_db = {
 
 
 class Token(BaseModel):
+    """Define a Pydantic Model that will be used in the token endpoint for the response."""
+
     access_token: str
     token_type: str
 
@@ -54,6 +56,7 @@ class UserInDB(User):
     hashed_password: str
 
 
+# Setting up passlib
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
@@ -62,10 +65,12 @@ app = FastAPI()
 
 
 def verify_password(plain_password, hashed_password):
+    """Verify if a received password matches the hash stored."""
     return pwd_context.verify(NONCE_PEPPER + plain_password, hashed_password)
 
 
 def get_password_hash(password):
+    """Hash a password coming from the user."""
     return pwd_context.hash(NONCE_PEPPER + password)
 
 
@@ -76,6 +81,7 @@ def get_user(db, username: str):
 
 
 def authenticate_user(fake_db, username: str, password: str):
+    """Authenticate and return a user."""
     user = get_user(fake_db, username)
     if not user:
         return False
@@ -87,6 +93,7 @@ def authenticate_user(fake_db, username: str, password: str):
 def create_access_token(
     data: dict, expires_delta: Union[timedelta, None] = None
 ):
+    """Generate a new access token."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -98,6 +105,7 @@ def create_access_token(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """Decode the received token, verify it, and return the current user."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Could not validate credentials',
@@ -129,6 +137,8 @@ async def get_current_active_user(
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
+    """Create a timedelta with the expiration time of the token."""
+    """Create a real JWT access token and return it."""
     user = authenticate_user(
         fake_users_db, form_data.username, form_data.password
     )
