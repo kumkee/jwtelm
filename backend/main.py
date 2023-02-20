@@ -16,6 +16,7 @@ ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
+# User database
 fake_users_db = {
     'johndoe': {
         'username': 'johndoe',
@@ -42,10 +43,14 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
+    """Token as a Pydantic Model."""
+
     username: Union[str, None] = None
 
 
 class User(BaseModel):
+    """Use Pydantic to create a user model."""
+
     username: str
     email: Union[str, None] = None
     full_name: Union[str, None] = None
@@ -53,12 +58,18 @@ class User(BaseModel):
 
 
 class UserInDB(User):
+    """Adding hashed_password to the user model."""
+
     hashed_password: str
 
 
 # Setting up passlib
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
+# create an instance of the OAuth2PasswordBearer class we pass in the tokenUrl
+# parameter. This parameter contains the URL that the client (the frontend
+# running in the user's browser) will use to send the username and password in
+# order to get a token.
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 app = FastAPI()
@@ -75,6 +86,7 @@ def get_password_hash(password):
 
 
 def get_user(db, username: str):
+    """Return a user model."""
     if username in db:
         user_dict = db[username]
         return UserInDB(**user_dict)
@@ -128,6 +140,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def get_current_active_user(
     current_user: User = Depends(get_current_user),
 ):
+    """Check and return if a user is active."""
     if current_user.disabled:
         raise HTTPException(status_code=400, detail='Inactive user')
     return current_user
@@ -139,6 +152,8 @@ async def login_for_access_token(
 ):
     """Create a timedelta with the expiration time of the token."""
     """Create a real JWT access token and return it."""
+    """Use Auth2PasswordRequestForm as a dependency with Depends in the path
+    operation for /token"""
     user = authenticate_user(
         fake_users_db, form_data.username, form_data.password
     )
@@ -157,6 +172,7 @@ async def login_for_access_token(
 
 @app.get('/users/me/', response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    """Path to get user model."""
     return current_user
 
 
@@ -164,4 +180,5 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def read_own_items(
     current_user: User = Depends(get_current_active_user),
 ):
+    """Path to get user items."""
     return [{'item_id': 'Foo', 'owner': current_user.username}]
