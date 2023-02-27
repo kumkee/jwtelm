@@ -1,3 +1,8 @@
+# elm-package generated files
+elm-stuff
+# elm-repl generated files
+repl-temp-*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
