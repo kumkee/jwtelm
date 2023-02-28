@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, text, input)
+import Html exposing (Html, button, div, input, text)
 import Html.Attributes exposing (placeholder)
 import Html.Events exposing (onClick)
 
@@ -20,18 +20,28 @@ init _ =
     ( Logout, Cmd.none )
 
 
-view: Model -> Html Msg
+view : Model -> Html Msg
 view model =
     case model of
         Logout ->
             div []
-                [ [ text "Username: "]
-                , [ input [placeholder "username"] ]
+                [ [ text "Username: " ]
+                , [ input [ placeholder "username" ] ]
                 ]
+
+        Login token ->
+            div [] [ text token ]
 
 
 type Msg
     = GotToken String
+
+
+update: Model -> Msg -> Model
+update _ msg =
+    case msg of
+        GotToken token ->
+            Login token
 
 
 type Model
