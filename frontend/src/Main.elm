@@ -43,9 +43,12 @@ view model =
                     ]
                 , tr []
                     [ td [] [ text "Password: " ]
-                    , td [] [ input [ type_ "password" ] [] ]
+                    , td []
+                        [ input [ type_ "password", placeholder "password" ]
+                            []
+                        ]
                     ]
-                , tr [] [ button [] [text "Login"] ]
+                , tr [] [ td [] [], button [] [ text "Login" ] ]
                 ]
 
         Login token ->
@@ -60,7 +63,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotToken token ->
-            ( { model | token = token }, Cmd.none )
+            ( { model | token = token, status = Login token }, Cmd.none )
 
 
 type alias Model =
