@@ -1,32 +1,40 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, input, text)
-import Html.Attributes exposing (placeholder)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, input, text)
+import Html.Attributes exposing (placeholder, value)
 
 
 main =
     Browser.element
         { init = init
         , update = update
-        , subscriptions = Sub.none
+        , subscriptions = \_ -> Sub.none
         , view = view
         }
 
 
 init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Logout, Cmd.none )
+init () =
+    ( Model Nothing "" Logout, Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
-    case model of
+    let
+        username =
+            case model.user of
+                Nothing ->
+                    "null"
+
+                Just user ->
+                    user.username
+    in
+    case model.status of
         Logout ->
             div []
-                [ [ text "Username: " ]
-                , [ input [ placeholder "username" ] ]
+                [ text "Username: "
+                , input [ placeholder "username", value username ] []
                 ]
 
         Login token ->
@@ -37,15 +45,25 @@ type Msg
     = GotToken String
 
 
-update: Model -> Msg -> Model
-update _ msg =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
         GotToken token ->
-            Login token
+            ( { model | token = token }, Cmd.none )
 
 
-type Model
-    = Status
+type alias Model =
+    { user : Maybe User
+    , token : String
+    , status : Status
+    }
+
+
+type alias User =
+    { username : String
+    , fullname : String
+    , email : String
+    }
 
 
 type Status
