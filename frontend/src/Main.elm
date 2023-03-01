@@ -2,9 +2,10 @@ module Main exposing (main)
 
 import Browser
 import Html exposing (Html, div, input, text)
-import Html.Attributes exposing (placeholder, value)
+import Html.Attributes exposing (placeholder, type_, value)
 
 
+main : Program () Model Msg
 main =
     Browser.element
         { init = init
@@ -25,7 +26,7 @@ view model =
         username =
             case model.user of
                 Nothing ->
-                    "null"
+                    ""
 
                 Just user ->
                     user.username
@@ -33,8 +34,14 @@ view model =
     case model.status of
         Logout ->
             div []
-                [ text "Username: "
-                , input [ placeholder "username", value username ] []
+                [ div []
+                    [ text "Username: "
+                    , input [ placeholder "username", value username ] []
+                    ]
+                , div []
+                    [ text "Password: "
+                    , input [ type_ "password" ] []
+                    ]
                 ]
 
         Login token ->
