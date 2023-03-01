@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, div, input, text)
+import Html exposing (Html, button, div, input, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 
 
@@ -33,15 +33,19 @@ view model =
     in
     case model.status of
         Logout ->
-            div []
-                [ div []
-                    [ text "Username: "
-                    , input [ placeholder "username", value username ] []
+            table []
+                [ tr []
+                    [ td [] [ text "Username: " ]
+                    , td []
+                        [ input [ placeholder "username", value username ]
+                            []
+                        ]
                     ]
-                , div []
-                    [ text "Password: "
-                    , input [ type_ "password" ] []
+                , tr []
+                    [ td [] [ text "Password: " ]
+                    , td [] [ input [ type_ "password" ] [] ]
                     ]
+                , tr [] [ button [] [text "Login"] ]
                 ]
 
         Login token ->
