@@ -17,27 +17,18 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( Model Nothing "" Logout, Cmd.none )
+    ( Model Nothing "" (Logout <| Form "" ""), Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
-    let
-        username =
-            case model.user of
-                Nothing ->
-                    ""
-
-                Just user ->
-                    user.username
-    in
     case model.status of
-        Logout ->
+        Logout form->
             table []
                 [ tr []
                     [ td [] [ text "Username: " ]
                     , td []
-                        [ input [ placeholder "username", value username ]
+                        [ input [ placeholder "username", value form.username ]
                             []
                         ]
                     ]
@@ -80,6 +71,12 @@ type alias User =
     }
 
 
+type alias Form = 
+    { username : String
+    , password : String
+    }
+
+
 type Status
     = Login String -- bearer token
-    | Logout
+    | Logout Form
