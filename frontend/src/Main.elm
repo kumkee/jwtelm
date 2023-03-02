@@ -64,17 +64,18 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case (msg, model.status) of
-        (GotToken token, _) ->
+    case ( msg, model.status ) of
+        ( GotToken token, _ ) ->
             ( { model | token = token, status = Login token }, Cmd.none )
-        (UserNameChanged username, Logout form) ->
-            ( { model | status = Logout {form | username = username}}, Cmd.none)
-        (PasswordChanged password, Logout form) ->
-            ( { model | status = Logout {form | password = password}}, Cmd.none)
-        (_, Login _) ->
-            (model, Cmd.none)
 
-                    
+        ( UserNameChanged username, Logout form ) ->
+            ( { model | status = Logout { form | username = username } }, Cmd.none )
+
+        ( PasswordChanged password, Logout form ) ->
+            ( { model | status = Logout { form | password = password } }, Cmd.none )
+
+        ( _, Login _ ) ->
+            ( model, Cmd.none )
 
 
 type alias Model =
