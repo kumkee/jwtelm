@@ -1,10 +1,12 @@
 module Main exposing (main)
 
 import Browser
+import Debug
 import Html exposing (Html, button, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Http
+import Json.Encode as Encode
 
 
 main : Program () Model Msg
@@ -45,7 +47,7 @@ view model =
                             PasswordChanged
                         ]
                     ]
-                , tr [] [ td [] [], button [] [ text "Login" ] ]
+                , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
                 ]
 
         SignedIn token ->
@@ -61,6 +63,7 @@ type Msg
     = Login
     | UserNameChanged String
     | PasswordChanged String
+    | GotToken (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -72,16 +75,34 @@ update msg model =
         ( PasswordChanged password, SignedOut form ) ->
             ( { model | status = SignedOut { form | password = password } }, Cmd.none )
 
+        ( Login, SignedOut form ) ->
+            ( model, loginCmd form )
+
+        ( GotToken (Ok token), _ ) ->
+            ( { model | status = SignedIn token }, Cmd.none )
+
+        ( GotToken (Err error), _ ) ->
+            ( { model | status = SignedIn <| Debug.toString error }, Cmd.none )
+
         ( _, SignedIn token ) ->
             ( { model | token = token, status = SignedIn token }, Cmd.none )
-
-        ( Login, SignedOut form ) ->
-            ( model, Cmd.none )
 
 
 loginCmd : Form -> Cmd Msg
 loginCmd form =
-    Cmd.none -- TODO: implmentation using Http.post with multiparBody
+    -- Cmd.none -- TODO: implmentation using Http.post with multiparBody
+    let
+        value =
+            Encode.object
+                [ ( "username", Encode.string form.username )
+                , ( "password", Encode.string form.password )
+                ]
+    in
+    Http.post
+        { url = "https://jwtelm-1-v6024448.deta.app/token"
+        , body = Http.jsonBody value
+        , expect = Http.expectString GotToken
+        }
 
 
 type alias Model =
