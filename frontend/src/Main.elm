@@ -5,7 +5,6 @@ import Html exposing (Html, button, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Http
-import Html exposing (header)
 
 
 main : Program () Model Msg
