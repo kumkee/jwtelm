@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 from passlib.context import CryptContext
@@ -33,6 +34,11 @@ fake_users_db = {
         'disabled': False,
     },
 }
+
+
+origins = [
+    'http://localhost:8000',
+]
 
 
 class Token(BaseModel):
@@ -73,6 +79,14 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 def verify_password(plain_password, hashed_password):
