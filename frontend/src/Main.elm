@@ -1,9 +1,11 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, input, table, td, text, tr)
+import Html exposing (Html, button, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
+import Http
+import Html exposing (header)
 
 
 main : Program () Model Msg
@@ -18,13 +20,13 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( Model Nothing "" (Logout <| Form "" ""), Cmd.none )
+    ( Model Nothing "" (SignedOut <| Form "" ""), Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
     case model.status of
-        Logout form ->
+        SignedOut form ->
             table []
                 [ tr []
                     [ td [] [ text "Username: " ]
@@ -47,8 +49,8 @@ view model =
                 , tr [] [ td [] [], button [] [ text "Login" ] ]
                 ]
 
-        Login token ->
-            div [] [ text token ]
+        SignedIn token ->
+            pre [] [ text token ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -57,7 +59,7 @@ viewInput t p v toMsg =
 
 
 type Msg
-    = GotToken String
+    = Login
     | UserNameChanged String
     | PasswordChanged String
 
@@ -65,17 +67,22 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.status ) of
-        ( GotToken token, _ ) ->
-            ( { model | token = token, status = Login token }, Cmd.none )
+        ( UserNameChanged username, SignedOut form ) ->
+            ( { model | status = SignedOut { form | username = username } }, Cmd.none )
 
-        ( UserNameChanged username, Logout form ) ->
-            ( { model | status = Logout { form | username = username } }, Cmd.none )
+        ( PasswordChanged password, SignedOut form ) ->
+            ( { model | status = SignedOut { form | password = password } }, Cmd.none )
 
-        ( PasswordChanged password, Logout form ) ->
-            ( { model | status = Logout { form | password = password } }, Cmd.none )
+        ( _, SignedIn token ) ->
+            ( { model | token = token, status = SignedIn token }, Cmd.none )
 
-        ( _, Login _ ) ->
+        ( Login, SignedOut form ) ->
             ( model, Cmd.none )
+
+
+loginCmd : Form -> Cmd Msg
+loginCmd form =
+    Cmd.none -- TODO: implmentation
 
 
 type alias Model =
@@ -99,5 +106,5 @@ type alias Form =
 
 
 type Status
-    = Login String -- bearer token
-    | Logout Form
+    = SignedIn String -- bearer token
+    | SignedOut Form
