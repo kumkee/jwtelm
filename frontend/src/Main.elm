@@ -82,7 +82,7 @@ update msg model =
 
 loginCmd : Form -> Cmd Msg
 loginCmd form =
-    Cmd.none -- TODO: implmentation
+    Cmd.none -- TODO: implmentation using Http.post with multiparBody
 
 
 type alias Model =
