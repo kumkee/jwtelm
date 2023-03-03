@@ -96,8 +96,7 @@ loginCmd form =
             Http.stringBody "application/x-www-form-urlencoded" <|
                 Format.value form.password <|
                     Format.value form.username <|
-                        "grant_type=&username={{ }}&password={{ }}"
-                            ++ "&scope=&client_id=&client_secret="
+                        "username={{ }}&password={{ }}"
     in
     Http.post
         { url = "https://jwtelm-1-v6024448.deta.app/token"
