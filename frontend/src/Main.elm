@@ -6,7 +6,7 @@ import Html exposing (Html, button, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
-import Json.Encode as Encode
+import String.Format as Format
 
 
 main : Program () Model Msg
@@ -92,15 +92,16 @@ loginCmd : Form -> Cmd Msg
 loginCmd form =
     -- Cmd.none -- TODO: implmentation using Http.post with multiparBody
     let
-        value =
-            Encode.object
-                [ ( "username", Encode.string form.username )
-                , ( "password", Encode.string form.password )
-                ]
+        body =
+            Http.stringBody "application/x-www-form-urlencoded" <|
+                Format.value form.password <|
+                    Format.value form.username <|
+                        "grant_type=&username={{ }}&password={{ }}"
+                            ++ "&scope=&client_id=&client_secret="
     in
     Http.post
         { url = "https://jwtelm-1-v6024448.deta.app/token"
-        , body = Http.jsonBody value
+        , body = body
         , expect = Http.expectString GotToken
         }
 
