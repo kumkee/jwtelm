@@ -16,6 +16,7 @@ import String.Format as Format
    TODO List:
    1. Handle http errors, especialy BadStatus 401 Unauthorized
    2. Single page application
+   3. Opensource and host the frontend on GitHub pages
 -}
 
 
