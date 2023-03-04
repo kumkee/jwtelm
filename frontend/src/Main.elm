@@ -2,11 +2,15 @@ module Main exposing (main)
 
 import Browser
 import Debug
-import Html exposing (Html, button, div, input, pre, table, td, text, tr, br)
+import Html exposing (Html, br, button, div, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import String.Format as Format
+
+
+baseUrl : String
+baseUrl = "https://jwtelm-1-v6024448.deta.app/" 
 
 
 main : Program () Model Msg
@@ -114,7 +118,7 @@ loginCmd form =
                         "username={{ }}&password={{ }}"
     in
     Http.post
-        { url = "https://jwtelm-1-v6024448.deta.app/token"
+        { url = baseUrl ++ "token"
         , body = body
         , expect = Http.expectString GotToken
         }
@@ -130,6 +134,7 @@ type alias User =
     { username : String
     , fullname : String
     , email : String
+    , disabled : Bool
     }
 
 
