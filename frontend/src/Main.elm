@@ -65,6 +65,9 @@ view model =
                 , text user.email
                 ]
 
+        Loading ->
+            text "Loading..."
+
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
@@ -88,7 +91,7 @@ update msg model =
             ( SignedOut { form | password = password }, Cmd.none )
 
         ( Login, SignedOut form ) ->
-            ( model, loginCmd form )
+            ( Loading, loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
             ( SignedIn token Nothing, Cmd.none )
@@ -96,7 +99,7 @@ update msg model =
         ( GotToken (Err error), _ ) ->
             ( SignedIn (Debug.toString error) Nothing, Cmd.none )
 
-        ( _, SignedIn _ _ ) ->
+        ( _, _ ) ->
             ( model, Cmd.none )
 
 
@@ -120,6 +123,7 @@ loginCmd form =
 type Model
     = SignedOut Form
     | SignedIn String (Maybe User)
+    | Loading
 
 
 type alias User =
