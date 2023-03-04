@@ -1,2 +1,2 @@
 # jwtelm
-Experimenting jwt with fastapi (backend) and elm (frontend)
+Full-stack [jwt](https://jwt.io/) user authorization with [fastapi](https://fastapi.tiangolo.com/) (backend) and [elm](https://elm-lang.org/) (frontend)
