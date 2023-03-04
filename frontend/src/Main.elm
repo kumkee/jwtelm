@@ -6,11 +6,14 @@ import Html exposing (Html, br, button, div, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
+import Json.Decode exposing (Decoder, bool, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 import String.Format as Format
 
 
 baseUrl : String
-baseUrl = "https://jwtelm-1-v6024448.deta.app/" 
+baseUrl =
+    "https://jwtelm-1-v6024448.deta.app/"
 
 
 main : Program () Model Msg
@@ -69,8 +72,8 @@ view model =
                 , text user.email
                 ]
 
-        Loading ->
-            text "Loading..."
+        Loading target ->
+            text <| "Loading" ++ target ++ "..."
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -83,6 +86,7 @@ type Msg
     | UserNameChanged String
     | PasswordChanged String
     | GotToken (Result Http.Error String)
+    | GotUser (Result Http.Error User)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -95,13 +99,19 @@ update msg model =
             ( SignedOut { form | password = password }, Cmd.none )
 
         ( Login, SignedOut form ) ->
-            ( Loading, loginCmd form )
+            ( Loading "access token", loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
-            ( SignedIn token Nothing, Cmd.none )
+            ( SignedIn token Nothing, getUserCmd token )
+
+        ( GotUser (Ok user), SignedIn token Nothing ) ->
+            ( SignedIn token <| Just user, Cmd.none)
 
         ( GotToken (Err error), _ ) ->
-            ( SignedIn (Debug.toString error) Nothing, Cmd.none )
+            ( SignedIn ("GotToken: " ++ Debug.toString error) Nothing, Cmd.none )
+
+        ( GotUser (Err error), _ ) ->
+            ( SignedIn ("GotUser: " ++ Debug.toString error) Nothing, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -109,7 +119,6 @@ update msg model =
 
 loginCmd : Form -> Cmd Msg
 loginCmd form =
-    -- Cmd.none -- TODO: implmentation using Http.post with multiparBody
     let
         body =
             Http.stringBody "application/x-www-form-urlencoded" <|
@@ -124,10 +133,36 @@ loginCmd form =
         }
 
 
+userDecoder : Decoder User
+userDecoder =
+    succeed User
+        |> required "username" string
+        |> required "email" string
+        |> required "full_name" string
+        |> required "disabled" bool
+
+
+getUserCmd : String -> Cmd Msg
+getUserCmd token =
+    Http.request
+        { method = "GET"
+        , headers =
+            [ Http.header "accept: application/json" <|
+                "Authorization: Bearer "
+                    ++ token
+            ]
+        , url = baseUrl ++ "users/me"
+        , body = Http.emptyBody
+        , expect = Http.expectJson GotUser userDecoder
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
 type Model
     = SignedOut Form
     | SignedIn String (Maybe User)
-    | Loading
+    | Loading String
 
 
 type alias User =
