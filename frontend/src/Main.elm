@@ -11,6 +11,13 @@ import Json.Decode.Pipeline exposing (required)
 import String.Format as Format
 
 
+{- 
+TODO List:
+1. Handle http errors, especialy BadStatus 401 Unauthorized
+2. Single page application
+-}
+
+
 baseUrl : String
 baseUrl =
     "https://jwtelm-1-v6024448.deta.app/"
