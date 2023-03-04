@@ -65,7 +65,7 @@ view model =
                 ]
 
         SignedIn Nothing ->
-            pre [] [ text model.token.tokenString ]
+            pre [] [ text model.token.tokenValue ]
 
         SignedIn (Just user) ->
             div []
@@ -116,7 +116,15 @@ update msg model =
             ( { model | status = Loading "access token" }, loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
-            ( { model | status = Loading "user" }, getUserCmd token )
+            ( { model
+                | status =
+                    Loading <|
+                        "user with token "
+                            ++ Debug.toString token
+                , token = token
+              }
+            , getUserCmd token
+            )
 
         ( GotUser (Ok user), _ ) ->
             ( { model | status = SignedIn <| Just user }, Cmd.none )
@@ -127,7 +135,15 @@ update msg model =
             )
 
         ( GotUser (Err error), _ ) ->
-            ( { model | status = Error ("GotUser: " ++ Debug.toString error) }
+            ( { model
+                | status =
+                    Error
+                        ("GotUser: "
+                            ++ Debug.toString error
+                            ++ " with token "
+                            ++ Debug.toString model.token
+                        )
+              }
             , Cmd.none
             )
 
@@ -172,10 +188,10 @@ getUserCmd token =
     Http.request
         { method = "GET"
         , headers =
-            [ Http.header "accept: application/json" <|
-                Format.value token.tokenString <|
-                    Format.value token.tokenType <|
-                        "Authorization: {{ }} {{ }}"
+            [ Http.header "Authorization" <|
+                Format.value token.tokenValue <|
+                    Format.value token.tokenValue <|
+                        "{{ }} {{ }}"
             ]
         , url = baseUrl ++ "users/me"
         , body = Http.emptyBody
@@ -192,8 +208,8 @@ type alias Model =
 
 
 type alias Token =
-    { tokenString : String
-    , tokenType : String
+    { tokenType : String
+    , tokenValue : String
     }
 
 
