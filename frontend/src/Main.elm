@@ -142,22 +142,6 @@ update msg model =
             ( model, Cmd.none )
 
 
-loginCmd : Form -> Cmd Msg
-loginCmd form =
-    let
-        body =
-            Http.stringBody "application/x-www-form-urlencoded" <|
-                Format.value form.password <|
-                    Format.value form.username <|
-                        "username={{ }}&password={{ }}"
-    in
-    Http.post
-        { url = baseUrl ++ "token"
-        , body = body
-        , expect = Http.expectJson GotToken tokenDecoder
-        }
-
-
 tokenDecoder : Decoder Token
 tokenDecoder =
     succeed Token
@@ -174,8 +158,24 @@ userDecoder =
         |> required "disabled" bool
 
 
-getUserCmd : Token -> Cmd Msg
-getUserCmd token =
+loginCmd : Form -> Cmd Msg
+loginCmd form =
+    let
+        body =
+            Http.stringBody "application/x-www-form-urlencoded" <|
+                Format.value form.password <|
+                    Format.value form.username <|
+                        "username={{ }}&password={{ }}"
+    in
+    Http.post
+        { url = baseUrl ++ "token"
+        , body = body
+        , expect = Http.expectJson GotToken tokenDecoder
+        }
+
+
+requestGetWithToken : String -> Token -> Http.Expect Msg -> Cmd Msg
+requestGetWithToken path token msg =
     Http.request
         { method = "GET"
         , headers =
@@ -184,12 +184,22 @@ getUserCmd token =
                     Format.value token.tokenType <|
                         "{{ }} {{ }}"
             ]
-        , url = baseUrl ++ "users/me"
+        , url = baseUrl ++ path
         , body = Http.emptyBody
-        , expect = Http.expectJson GotUser userDecoder
+        , expect = msg
         , timeout = Nothing
         , tracker = Nothing
         }
+
+
+getUserCmd : Token -> Cmd Msg
+getUserCmd token =
+    requestGetWithToken "users/me" token <| Http.expectJson GotUser userDecoder
+
+
+getItemsCmd : Token -> Cmd Msg
+getItemsCmd token =
+    Cmd.none
 
 
 type alias Model =
