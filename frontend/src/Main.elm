@@ -2,8 +2,8 @@ module Main exposing (main)
 
 import Browser
 import Debug
-import Html exposing (Html, button, div, input, pre, table, td, text, tr, br)
-import Html.Attributes exposing (placeholder, type_, value)
+import Html exposing (Html, br, button, div, input, label, pre, text)
+import Html.Attributes exposing (action, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import String.Format as Format
@@ -28,26 +28,16 @@ view : Model -> Html Msg
 view model =
     case model of
         SignedOut form ->
-            table []
-                [ tr []
-                    [ td [] [ text "Username: " ]
-                    , td []
-                        [ viewInput "text"
-                            "username"
-                            form.username
-                            UserNameChanged
-                        ]
+            Html.form []
+                [ label []
+                    [ text "Username: "
+                    , viewInput "text" "username" form.username UserNameChanged
                     ]
-                , tr []
-                    [ td [] [ text "Password: " ]
-                    , td []
-                        [ viewInput "password"
-                            "password"
-                            form.password
-                            PasswordChanged
-                        ]
+                , br [] []
+                , label []
+                    [ text "Password: "
+                    , viewInput "text" "password" form.password PasswordChanged
                     ]
-                , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
                 ]
 
         SignedIn token Nothing ->
