@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Debug
-import Html exposing (Html, button, input, pre, table, td, text, tr)
+import Html exposing (Html, button, div, input, pre, table, td, text, tr, br)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
@@ -21,12 +21,12 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( Model Nothing "" (SignedOut <| Form "" ""), Cmd.none )
+    ( SignedOut <| Form "" "", Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
-    case model.status of
+    case model of
         SignedOut form ->
             table []
                 [ tr []
@@ -50,8 +50,20 @@ view model =
                 , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
                 ]
 
-        SignedIn token ->
+        SignedIn token Nothing ->
             pre [] [ text token ]
+
+        SignedIn _ (Just user) ->
+            div []
+                [ text "User: "
+                , text user.username
+                , br [] []
+                , text "Full name: "
+                , text user.fullname
+                , br [] []
+                , text "Email: "
+                , text user.email
+                ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -68,24 +80,24 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case ( msg, model.status ) of
+    case ( msg, model ) of
         ( UserNameChanged username, SignedOut form ) ->
-            ( { model | status = SignedOut { form | username = username } }, Cmd.none )
+            ( SignedOut { form | username = username }, Cmd.none )
 
         ( PasswordChanged password, SignedOut form ) ->
-            ( { model | status = SignedOut { form | password = password } }, Cmd.none )
+            ( SignedOut { form | password = password }, Cmd.none )
 
         ( Login, SignedOut form ) ->
             ( model, loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
-            ( { model | status = SignedIn token }, Cmd.none )
+            ( SignedIn token Nothing, Cmd.none )
 
         ( GotToken (Err error), _ ) ->
-            ( { model | status = SignedIn <| Debug.toString error }, Cmd.none )
+            ( SignedIn (Debug.toString error) Nothing, Cmd.none )
 
-        ( _, SignedIn token ) ->
-            ( { model | token = token, status = SignedIn token }, Cmd.none )
+        ( _, SignedIn _ _ ) ->
+            ( model, Cmd.none )
 
 
 loginCmd : Form -> Cmd Msg
@@ -105,11 +117,9 @@ loginCmd form =
         }
 
 
-type alias Model =
-    { user : Maybe User
-    , token : String
-    , status : Status
-    }
+type Model
+    = SignedOut Form
+    | SignedIn String (Maybe User)
 
 
 type alias User =
@@ -123,8 +133,3 @@ type alias Form =
     { username : String
     , password : String
     }
-
-
-type Status
-    = SignedIn String -- bearer token
-    | SignedOut Form
