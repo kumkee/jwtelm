@@ -44,10 +44,19 @@ view model =
         SignedOut form ->
             viewForm form
 
-        SignedIn Nothing ->
+        SignedIn _ Nothing ->
             pre [] [ text model.token.tokenValue ]
 
-        SignedIn (Just user) ->
+        SignedIn info (Just user) ->
+            let
+                button_info =
+                    case info of
+                        "" ->
+                            button [ onClick GetItems ] [ text "Get Items" ]
+
+                        _ ->
+                            pre [] [ text info ]
+            in
             div []
                 [ text "User: "
                 , text user.username
@@ -57,6 +66,8 @@ view model =
                 , br [] []
                 , text "Email: "
                 , text user.email
+                , br [] []
+                , button_info
                 ]
 
         Loading target ->
@@ -102,6 +113,8 @@ type Msg
     | PasswordChanged String
     | GotToken (Result Http.Error Token)
     | GotUser (Result Http.Error User)
+    | GotItems (Result Http.Error String)
+    | GetItems
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -126,7 +139,7 @@ update msg model =
             )
 
         ( GotUser (Ok user), _ ) ->
-            ( { model | status = SignedIn <| Just user }, Cmd.none )
+            ( { model | status = SignedIn "" <| Just user }, Cmd.none )
 
         ( GotToken (Err error), _ ) ->
             ( { model | status = Error ("GotToken: " ++ Debug.toString error) }
@@ -137,6 +150,12 @@ update msg model =
             ( { model | status = Error ("GotUser: " ++ Debug.toString error) }
             , Cmd.none
             )
+
+        ( GetItems, SignedIn _ _ ) ->
+            ( model, getItemsCmd model.token )
+
+        ( GotItems (Ok items), SignedIn _ user ) ->
+            ( { model | status = SignedIn items user }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -199,7 +218,7 @@ getUserCmd token =
 
 getItemsCmd : Token -> Cmd Msg
 getItemsCmd token =
-    Cmd.none
+    requestGetWithToken "users/me/items" token <| Http.expectString GotItems
 
 
 type alias Model =
@@ -216,7 +235,7 @@ type alias Token =
 
 type Status
     = SignedOut Form
-    | SignedIn (Maybe User)
+    | SignedIn String (Maybe User)
     | Loading String
     | Error String
 
