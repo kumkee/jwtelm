@@ -42,27 +42,7 @@ view : Model -> Html Msg
 view model =
     case model.status of
         SignedOut form ->
-            table []
-                [ tr []
-                    [ td [] [ text "Username: " ]
-                    , td []
-                        [ viewInput "text"
-                            "username"
-                            form.username
-                            UserNameChanged
-                        ]
-                    ]
-                , tr []
-                    [ td [] [ text "Password: " ]
-                    , td []
-                        [ viewInput "password"
-                            "password"
-                            form.password
-                            PasswordChanged
-                        ]
-                    ]
-                , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
-                ]
+            viewForm form
 
         SignedIn Nothing ->
             pre [] [ text model.token.tokenValue ]
@@ -89,6 +69,31 @@ view model =
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, onInput toMsg ] []
+
+
+viewForm : Form -> Html Msg
+viewForm form =
+    table []
+        [ tr []
+            [ td [] [ text "Username: " ]
+            , td []
+                [ viewInput "text"
+                    "username"
+                    form.username
+                    UserNameChanged
+                ]
+            ]
+        , tr []
+            [ td [] [ text "Password: " ]
+            , td []
+                [ viewInput "password"
+                    "password"
+                    form.password
+                    PasswordChanged
+                ]
+            ]
+        , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
+        ]
 
 
 type Msg
