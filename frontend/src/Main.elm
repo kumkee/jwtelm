@@ -116,13 +116,7 @@ update msg model =
             ( { model | status = Loading "access token" }, loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
-            ( { model
-                | status =
-                    Loading <|
-                        "user with token "
-                            ++ Debug.toString token
-                , token = token
-              }
+            ( { model | status = Loading "user", token = token }
             , getUserCmd token
             )
 
@@ -135,15 +129,7 @@ update msg model =
             )
 
         ( GotUser (Err error), _ ) ->
-            ( { model
-                | status =
-                    Error
-                        ("GotUser: "
-                            ++ Debug.toString error
-                            ++ " with token "
-                            ++ Debug.toString model.token
-                        )
-              }
+            ( { model | status = Error ("GotUser: " ++ Debug.toString error) }
             , Cmd.none
             )
 
@@ -170,8 +156,8 @@ loginCmd form =
 tokenDecoder : Decoder Token
 tokenDecoder =
     succeed Token
-        |> required "access_token" string
         |> required "token_type" string
+        |> required "access_token" string
 
 
 userDecoder : Decoder User
@@ -190,7 +176,7 @@ getUserCmd token =
         , headers =
             [ Http.header "Authorization" <|
                 Format.value token.tokenValue <|
-                    Format.value token.tokenValue <|
+                    Format.value token.tokenType <|
                         "{{ }} {{ }}"
             ]
         , url = baseUrl ++ "users/me"
