@@ -11,10 +11,11 @@ import Json.Decode.Pipeline exposing (required)
 import String.Format as Format
 
 
-{- 
-TODO List:
-1. Handle http errors, especialy BadStatus 401 Unauthorized
-2. Single page application
+
+{-
+   TODO List:
+   1. Handle http errors, especialy BadStatus 401 Unauthorized
+   2. Single page application
 -}
 
 
@@ -40,7 +41,7 @@ init () =
 
 initialModel : Model
 initialModel =
-    { token = Token "" ""
+    { token = AccessToken "" ""
     , status = SignedOut <| Form "" ""
     }
 
@@ -118,7 +119,7 @@ type Msg
     = Login
     | UserNameChanged String
     | PasswordChanged String
-    | GotToken (Result Http.Error Token)
+    | GotToken (Result Http.Error AccessToken)
     | GotUser (Result Http.Error User)
     | GotItems (Result Http.Error String)
     | GetItems
@@ -158,8 +159,10 @@ update msg model =
             , Cmd.none
             )
 
-        ( GetItems, SignedIn _ _ ) ->
-            ( model, getItemsCmd model.token )
+        ( GetItems, SignedIn _ user ) ->
+            ( { model | status = SignedIn "Loading items..." user }
+            , getItemsCmd model.token
+            )
 
         ( GotItems (Ok items), SignedIn _ user ) ->
             ( { model | status = SignedIn items user }, Cmd.none )
@@ -168,9 +171,9 @@ update msg model =
             ( model, Cmd.none )
 
 
-tokenDecoder : Decoder Token
+tokenDecoder : Decoder AccessToken
 tokenDecoder =
-    succeed Token
+    succeed AccessToken
         |> required "token_type" string
         |> required "access_token" string
 
@@ -200,7 +203,7 @@ loginCmd form =
         }
 
 
-requestGetWithToken : String -> Token -> Http.Expect Msg -> Cmd Msg
+requestGetWithToken : String -> AccessToken -> Http.Expect Msg -> Cmd Msg
 requestGetWithToken path token msg =
     Http.request
         { method = "GET"
@@ -218,23 +221,23 @@ requestGetWithToken path token msg =
         }
 
 
-getUserCmd : Token -> Cmd Msg
+getUserCmd : AccessToken -> Cmd Msg
 getUserCmd token =
     requestGetWithToken "users/me" token <| Http.expectJson GotUser userDecoder
 
 
-getItemsCmd : Token -> Cmd Msg
+getItemsCmd : AccessToken -> Cmd Msg
 getItemsCmd token =
     requestGetWithToken "users/me/items" token <| Http.expectString GotItems
 
 
 type alias Model =
-    { token : Token
+    { token : AccessToken
     , status : Status
     }
 
 
-type alias Token =
+type alias AccessToken =
     { tokenType : String
     , tokenValue : String
     }
