@@ -6,6 +6,7 @@ import Html exposing (Html, br, button, div, input, pre, table, td, text, tr)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
+import Http.ErrorHandler exposing (errorToString)
 import Json.Decode exposing (Decoder, bool, string, succeed)
 import Json.Decode.Pipeline exposing (required)
 import String.Format as Format
@@ -43,15 +44,15 @@ init () =
 initialModel : Model
 initialModel =
     { token = AccessToken "" ""
-    , status = SignedOut <| Form "" ""
+    , status = SignedOut "" <| Form "" ""
     }
 
 
 view : Model -> Html Msg
 view model =
     case model.status of
-        SignedOut form ->
-            viewForm form
+        SignedOut info form ->
+            viewForm info form
 
         SignedIn _ Nothing ->
             pre [] [ text model.token.tokenValue ]
@@ -82,17 +83,14 @@ view model =
         Loading target ->
             text <| "Loading " ++ target ++ "..."
 
-        Error err ->
-            text <| "Error: " ++ err
-
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, onInput toMsg ] []
 
 
-viewForm : Form -> Html Msg
-viewForm form =
+viewForm : String -> Form -> Html Msg
+viewForm info form =
     table []
         [ tr []
             [ td [] [ text "Username: " ]
@@ -113,6 +111,7 @@ viewForm form =
                 ]
             ]
         , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
+        , tr [] [ td [] [], text info ]
         ]
 
 
@@ -129,17 +128,17 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.status ) of
-        ( UserNameChanged username, SignedOut form ) ->
-            ( { model | status = SignedOut { form | username = username } }
+        ( UserNameChanged username, SignedOut info form ) ->
+            ( { model | status = SignedOut info { form | username = username } }
             , Cmd.none
             )
 
-        ( PasswordChanged password, SignedOut form ) ->
-            ( { model | status = SignedOut { form | password = password } }
+        ( PasswordChanged password, SignedOut info form ) ->
+            ( { model | status = SignedOut info { form | password = password } }
             , Cmd.none
             )
 
-        ( Login, SignedOut form ) ->
+        ( Login, SignedOut _ form ) ->
             ( { model | status = Loading "access token" }, loginCmd form )
 
         ( GotToken (Ok token), _ ) ->
@@ -151,12 +150,12 @@ update msg model =
             ( { model | status = SignedIn "" <| Just user }, Cmd.none )
 
         ( GotToken (Err error), _ ) ->
-            ( { model | status = Error ("GotToken: " ++ Debug.toString error) }
+            ( { model | status = SignedOut ("GotToken: " ++ errorToString error) <| Form "" "" }
             , Cmd.none
             )
 
         ( GotUser (Err error), _ ) ->
-            ( { model | status = Error ("GotUser: " ++ Debug.toString error) }
+            ( { model | status = SignedOut ("GotUser: " ++ errorToString error) <| Form "" "" }
             , Cmd.none
             )
 
@@ -250,10 +249,9 @@ type alias AccessToken =
 
 
 type Status
-    = SignedOut Form
+    = SignedOut String Form
     | SignedIn String (Maybe User)
     | Loading String
-    | Error String
 
 
 type alias User =
