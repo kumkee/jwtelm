@@ -70,7 +70,7 @@ view model =
                 [ text "User: "
                 , text user.username
                 , br [] []
-                , text "Full name: "
+                , text "Full Name: "
                 , text user.fullname
                 , br [] []
                 , text "Email: "
@@ -167,6 +167,11 @@ update msg model =
 
         ( GotItems (Ok items), SignedIn _ user ) ->
             ( { model | status = SignedIn items user }, Cmd.none )
+
+        ( GotItems (Err error), SignedIn _ user ) ->
+            ( { model | status = SignedIn (Debug.toString error) user }
+            , Cmd.none
+            )
 
         ( _, _ ) ->
             ( model, Cmd.none )
