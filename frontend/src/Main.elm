@@ -1,7 +1,6 @@
 module Main exposing (main)
 
 import Browser
-import Debug
 import Html exposing (Html, br, button, div, input, pre, table, td, text, tr)
 import Html.Attributes exposing (colspan, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -170,7 +169,7 @@ update msg model =
             ( { model | status = SignedIn items user }, Cmd.none )
 
         ( GotItems (Err error), SignedIn _ user ) ->
-            ( { model | status = SignedIn (Debug.toString error) user }
+            ( { model | status = SignedIn (errorToString error) user }
             , Cmd.none
             )
 
