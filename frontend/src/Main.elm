@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Debug
 import Html exposing (Html, br, button, div, input, pre, table, td, text, tr)
-import Html.Attributes exposing (placeholder, type_, value)
+import Html.Attributes exposing (colspan, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Http.ErrorHandler exposing (errorToString)
@@ -78,10 +78,8 @@ view model =
                 , text user.email
                 , br [] []
                 , button_info
+                , button [ onClick Logout ] [ text "Logout" ]
                 ]
-
-        Loading target ->
-            text <| "Loading " ++ target ++ "..."
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -111,12 +109,13 @@ viewForm info form =
                 ]
             ]
         , tr [] [ td [] [], button [ onClick Login ] [ text "Login" ] ]
-        , tr [] [ td [] [], text info ]
+        , tr [] [ td [ colspan 2 ] [ text info ] ]
         ]
 
 
 type Msg
     = Login
+    | Logout
     | UserNameChanged String
     | PasswordChanged String
     | GotToken (Result Http.Error AccessToken)
@@ -139,10 +138,13 @@ update msg model =
             )
 
         ( Login, SignedOut _ form ) ->
-            ( { model | status = Loading "access token" }, loginCmd form )
+            ( { model | status = SignedOut "Logging in ..." form }, loginCmd form )
 
-        ( GotToken (Ok token), _ ) ->
-            ( { model | status = Loading "user", token = token }
+        ( GotToken (Ok token), SignedOut _ form ) ->
+            ( { model
+                | status = SignedOut "Loading user details ..." form
+                , token = token
+              }
             , getUserCmd token
             )
 
@@ -171,6 +173,9 @@ update msg model =
             ( { model | status = SignedIn (Debug.toString error) user }
             , Cmd.none
             )
+
+        ( Logout, SignedIn _ _ ) ->
+            ( { model | status = SignedOut "" <| Form "" "" }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -251,7 +256,6 @@ type alias AccessToken =
 type Status
     = SignedOut String Form
     | SignedIn String (Maybe User)
-    | Loading String
 
 
 type alias User =
