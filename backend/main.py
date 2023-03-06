@@ -38,6 +38,7 @@ fake_users_db = {
 
 origins = [
     'http://localhost:8000',  # Elm reactor
+    'http://localhost', # Compiled js
 ]
 
 
