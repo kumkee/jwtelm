@@ -66,11 +66,7 @@ If you want to contribute to `jwtelm`, you're welcome to submit a pull request. 
 
 ## Conclusion
 
-Thanks for checking out jwtelm! We hope you find it useful. If you have any questions or suggestions, please feel free to create an issue or pull request.
-
 Demo live page: https://kumkee.github.io/jwtelm/
-
-Live demo backend is hosted in https://deta.space
 
 Please remember to modify `backend/secrect_strs.py` for your own project.
 
