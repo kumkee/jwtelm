@@ -38,7 +38,8 @@ fake_users_db = {
 
 origins = [
     'http://localhost:8000',  # Elm reactor
-    'http://localhost', # Compiled js
+    'http://localhost',  # Compiled js
+    'https://kumkee.github.io',  # Github Pages demo page
 ]
 
 
