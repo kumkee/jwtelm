@@ -2,7 +2,7 @@
 
 ## Overview
 
-`jwtelm` is an example code for user authorization that uses JWT (JSON Web Tokens) for authentication and authorization. The backend is built with FastAPI, a modern web framework for building APIs with Python. The frontend is built with Elm, a functional programming language that compiles to JavaScript.
+`jwtelm` is an example code for user authorization that uses JWT (JSON Web Tokens) for authentication. The backend is built with FastAPI, a modern web framework for building APIs with Python. The frontend is built with Elm, a functional programming language that compiles to JavaScript.
 
 ## Features
 
@@ -44,6 +44,7 @@ The backend server should now be running at `http://localhost:8001`.
 1. Navigate to the `frontend` directory.
 2. Build the Elm app for production by running `make`.
 3. Serve the compiled Elm app by running `python -m http.server 8000` in the same directory.
+4. Alternatively, you can run `elm reactor` under `frontend/` to see the result of the code instantly.
 
 - Note that `make` is for production and `elm reactor` is for reviewing.
 
