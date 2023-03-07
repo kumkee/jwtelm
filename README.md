@@ -9,8 +9,8 @@
 - User login
 - [JWT](https://jwt.io/)-based authentication and authorization
 - Frontend built with [Elm](https://elm-lang.org/)
-- Backend built with [FastAPI](https://fastapi.tiangolo.com/), a modern web framework for building APIs with Python
-
+- Backend built with [FastAPI](https://fastapi.tiangolo.com/)
+- 
 ## Getting started
 
 To experiment with `jwtelm`, clone this repository to your local machine:
@@ -30,6 +30,13 @@ To experiment with `jwtelm`, clone this repository to your local machine:
 JWT_KEY = 'my_secret_key'
 
 NONCE_PEPPER = 'my_nonce_pepper'
+```
+The content of `secrect_strs.py` in the live demo is
+```
+"""Secrects are kept here."""
+JWT_KEY = 'c1d1f32fbb59638db394c06566f84dd645fb4dd0fbe171bdcfa458651b0be47e'
+
+NONCE_PEPPER = 'qc4L1PeK2suXpHt9UyjfTJhOfFrjmvvjhdmAaFJ2cd6Vvnyw3iwOOkw='
 ```
 
 
