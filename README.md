@@ -10,7 +10,7 @@
 - [JWT](https://jwt.io/)-based authentication and authorization
 - Frontend built with [Elm](https://elm-lang.org/)
 - Backend built with [FastAPI](https://fastapi.tiangolo.com/)
-- 
+
 ## Getting started
 
 To experiment with `jwtelm`, clone this repository to your local machine:
@@ -31,7 +31,7 @@ JWT_KEY = 'my_secret_key'
 
 NONCE_PEPPER = 'my_nonce_pepper'
 ```
-The content of `secrect_strs.py` in the live demo is
+The content of `backen/secrect_strs.py` in the live demo is
 ```
 """Secrects are kept here."""
 JWT_KEY = 'c1d1f32fbb59638db394c06566f84dd645fb4dd0fbe171bdcfa458651b0be47e'
@@ -40,7 +40,7 @@ NONCE_PEPPER = 'qc4L1PeK2suXpHt9UyjfTJhOfFrjmvvjhdmAaFJ2cd6Vvnyw3iwOOkw='
 ```
 
 
-   Note that the content of `backend/secrect_strs.py` need to be changed for your own project.
+   Note that this need to be changed for your own project.
 
 5. Run the backend server with `uvicorn main:app --port 8001`.
 
