@@ -23,7 +23,7 @@ To experiment with `jwtelm`, clone this repository to your local machine:
 1. Navigate to the `backend/` directory.
 2. Create a new virtual environment with Python 3.9 and activate it.
 3. Install the required packages with `pip install -r requirements.txt`.
-4. Add your frontend url(s) to the CORS `origins` [list](https://github.com/kumkee/jwtelm/blob/741ddf62b288c2510e30fecc3f4649a2084353be/backend/main.py#L39) in `backend/main.py`. 
+4. Add your frontend url(s) to the CORS [`origins` list](https://github.com/kumkee/jwtelm/blob/741ddf62b288c2510e30fecc3f4649a2084353be/backend/main.py#L39) in `backend/main.py`. 
 4. Add a file named `secrect_strs.py` in the `backend` directory with your own secret keys. For example:
 
 ```
