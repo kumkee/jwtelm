@@ -52,7 +52,7 @@ NONCE_PEPPER = 'qc4L1PeK2suXpHt9UyjfTJhOfFrjmvvjhdmAaFJ2cd6Vvnyw3iwOOkw='
 1. Navigate to the `frontend/` directory.
 2. Change [`baseUrl`](https://github.com/kumkee/jwtelm/blob/main/frontend/src/Main.elm#L24) in `frontend/src/Main.elm` to your backend url.
 2. Build the Elm app for production by running `make`.
-3. Serve the compiled Elm app by running `python -m http.server 8000` in `frontend/build/.
+3. Serve the compiled Elm app by running `python -m http.server 8000` or any other HTTP server in `frontend/build/.
 4. Alternatively, you can run `elm reactor` under `frontend/` to see the result of the code instantly.
 
 - Note that `make` is for production and `elm reactor` is for reviewing.
