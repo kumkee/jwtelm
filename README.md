@@ -20,7 +20,7 @@ To experiment with `jwtelm`, clone this repository to your local machine:
 
 ### Backend
 
-1. Navigate to the `backend` directory.
+1. Navigate to the `backend/` directory.
 2. Create a new virtual environment with Python 3.9 and activate it.
 3. Install the required packages with `pip install -r requirements.txt`.
 4. Add your frontend url(s) to the CORS `origins` [list](https://github.com/kumkee/jwtelm/blob/741ddf62b288c2510e30fecc3f4649a2084353be/backend/main.py#L39) in `backend/main.py`. 
@@ -49,9 +49,9 @@ The backend server should now be running at `http://localhost:8001`.
 
 ### Frontend
 
-1. Navigate to the `frontend` directory.
+1. Navigate to the `frontend/` directory.
 2. Build the Elm app for production by running `make`.
-3. Serve the compiled Elm app by running `python -m http.server 8000` in the same directory.
+3. Serve the compiled Elm app by running `python -m http.server 8000` in `frontend/build/.
 4. Alternatively, you can run `elm reactor` under `frontend/` to see the result of the code instantly.
 
 - Note that `make` is for production and `elm reactor` is for reviewing.
