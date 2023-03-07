@@ -7,13 +7,13 @@
 ## Features
 
 - User login
-- JWT-based authentication and authorization
-- Frontend built with Elm, a functional programming language that guarantees no runtime exceptions
-- Backend built with FastAPI, a modern web framework for building APIs with Python
+- [JWT](https://jwt.io/)-based authentication and authorization
+- Frontend built with [Elm](https://elm-lang.org/)
+- Backend built with [FastAPI](https://fastapi.tiangolo.com/), a modern web framework for building APIs with Python
 
 ## Getting started
 
-To get started with `jwtelm`, clone this repository to your local machine:
+To experiment with `jwtelm`, clone this repository to your local machine:
 
 ```git clone https://github.com/kumkee/jwtelm.git```
 
@@ -33,7 +33,7 @@ NONCE_PEPPER = 'my_nonce_pepper'
 ```
 
 
-Note that the content of `backend/secrect_strs.py` need to be changed for your own project.
+   Note that the content of `backend/secrect_strs.py` need to be changed for your own project.
 
 5. Run the backend server with `uvicorn main:app --port 8001`.
 
@@ -42,18 +42,18 @@ The backend server should now be running at `http://localhost:8001`.
 ### Frontend
 
 1. Navigate to the `frontend` directory.
-2. Build the Elm app for production by running `make build`.
+2. Build the Elm app for production by running `make`.
 3. Serve the compiled Elm app by running `python -m http.server 8000` in the same directory.
 
-Note that `make` is for production and `elm reactor` is for reviewing.
+- Note that `make` is for production and `elm reactor` is for reviewing.
 
-The frontend should now be accessible at `http://localhost:8000`.
+- The frontend should now be accessible at `http://localhost:8000`.
 
 
 ## Demo
 
 You can try out a live demo of `jwtelm` at https://kumkee.github.io/jwtelm/. The backend of the live demo is hosted on [Deta Space](https://deta.space/). Login credentials for the demo are
-1. `johndoe` with password "secret"
+1. `johndoe` with password "secret" or
 2. `kumkee` with password "0123456789" 
 
 ## Contributing
