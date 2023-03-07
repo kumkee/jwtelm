@@ -2,7 +2,7 @@
 
 ## Overview
 
-`jwtelm` is an example code for user authorization that uses JWT (JSON Web Tokens) for authentication. The backend is built with FastAPI, a modern web framework for building APIs with Python. The frontend is built with Elm, a functional programming language that compiles to JavaScript.
+`jwtelm` is an example code for user authentication and authorization using JWT (JSON Web Tokens). The backend is built with FastAPI, a modern web framework for building APIs with Python. The frontend is built with Elm, a functional programming language that compiles to JavaScript with no runtime errors.
 
 ## Features
 
