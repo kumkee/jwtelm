@@ -9,7 +9,7 @@
 - User login
 - [JWT](https://jwt.io/)-based authentication and authorization
 - Frontend built with [Elm](https://elm-lang.org/)
-- Backend built with [FastAPI](https://fastapi.tiangolo.com/)
+- Backend built with [FastAPI](https://fastapi.tiangolo.com/) (backend code is based on [this tutorial](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/))
 
 ## Getting started
 
@@ -24,7 +24,7 @@ To experiment with `jwtelm`, clone this repository to your local machine:
 2. Create a new virtual environment with Python 3.9 and activate it.
 3. Install the required packages with `pip install -r requirements.txt`.
 4. Add your frontend url(s) to the CORS [`origins` list](https://github.com/kumkee/jwtelm/blob/741ddf62b288c2510e30fecc3f4649a2084353be/backend/main.py#L39) in `backend/main.py`. 
-4. Add a file named `secrect_strs.py` in the `backend` directory with your own secret keys. For example:
+5. Add a file named `secrect_strs.py` in the `backend` directory with your own secret keys. For example:
 
 ```
 """Secrets are kept here."""
@@ -32,7 +32,7 @@ JWT_KEY = 'my_secret_key'
 
 NONCE_PEPPER = 'my_nonce_pepper'
 ```
-The content of `backen/secrect_strs.py` in the live demo is
+   - The content of `backen/secrect_strs.py` in the live demo is
 ```
 """Secrects are kept here."""
 JWT_KEY = 'c1d1f32fbb59638db394c06566f84dd645fb4dd0fbe171bdcfa458651b0be47e'
@@ -41,11 +41,11 @@ NONCE_PEPPER = 'qc4L1PeK2suXpHt9UyjfTJhOfFrjmvvjhdmAaFJ2cd6Vvnyw3iwOOkw='
 ```
 
 
-   Note that this need to be changed for your own project.
+  - Note that this need to be changed for your own project.
 
-5. Run the backend server with `uvicorn main:app --port 8001`.
+6. Run the backend server with `uvicorn main:app --port 8001`.
 
-The backend server should now be running at `http://localhost:8001`.
+  - The backend server should now be running at `http://localhost:8001`.
 
 ### Frontend
 
