@@ -1,5 +1,11 @@
 # jwtelm
 
+## TL;DR
+
+Demo live page: https://kumkee.github.io/jwtelm/
+
+Please remember to modify `backend/secrect_strs.py` and `origins` in `backend/main.py` for your own project.
+
 ## Overview
 
 `jwtelm` is an example code for user authentication and authorization using JWT (JSON Web Tokens). The backend is built with FastAPI, a modern web framework for building APIs with Python. The frontend is built with Elm, a functional programming language that compiles to JavaScript with no runtime errors.
@@ -74,11 +80,6 @@ If you want to contribute to `jwtelm`, you're welcome to submit a pull request. 
 
 `jwtelm` is licensed under the MIT license. See [LICENSE](LICENSE) for more information.
 
-## Conclusion
-
-Demo live page: https://kumkee.github.io/jwtelm/
-
-Please remember to modify `backend/secrect_strs.py` and `origins` in `backend/main.py` for your own project.
 
 ---
 
