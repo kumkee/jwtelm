@@ -74,7 +74,7 @@ You can try out a live demo of `jwtelm` at https://kumkee.github.io/jwtelm/. The
 
 ## Contributing
 
-If you want to contribute to `jwtelm`, you're welcome to submit a pull request. Please make sure to follow the [code of conduct](CODE_OF_CONDUCT.md) and the [contribution guidelines](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62).
+If you want to contribute to `jwtelm`, you're welcome to submit a pull request. Please make sure to follow the [code of conduct](CODE_OF_CONDUCT.md) and the [contribution guidelines](CONTRIBUTING.md).
 
 ## License
 
